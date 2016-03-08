@@ -186,6 +186,7 @@ for instance in instances:
     break # remove this to list all instances
 ​```
 
+
 Listing all of your EC2 Instances using boto
 ```python
 import boto.ec2
