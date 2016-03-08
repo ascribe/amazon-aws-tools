@@ -1,6 +1,8 @@
-# amazon-aws-tools
+# Amazon-AWS-tools
 
-#### AWS Cli basic workflow
+### Official documentation can be found [here](http://awsdoc.s3.amazonaws.com/cli/latest/aws-cli.pdf)
+
+### AWS Cli basic workflow
 
 If you want to quickly list instances and their Security groups for particular environment, here is one-liner:
 ```sh
@@ -27,7 +29,7 @@ aws ec2 describe-instances --filters 'Name=tag:KEY,Values=VALUE' --query 'Reserv
 Also, you can configure your AWS CLI to work with profiles, so for example if you have different access keys for different environments, you can access them by using –profile (as shown above).
 
 
-####Other AWS Cli commands
+### Other AWS Cli commands
 
 List instanceIDs
 ```sh
@@ -52,4 +54,95 @@ aws ec2 describe-instances –filters "Name=tag-value,Values=VALS*"
 Search instances with tag keys “Name”
 ```sh
 aws ec2 describe-instances –filters "Name=tag-key,Values=Name"
+```
+Delete an S3 bucket and all its contents with just one command
+```sh
+aws s3 rb s3://bucket-name --force
+```
+Recursively copy a directory and its subfolders from your PC to Amazon S3.
+```sh
+aws s3 cp MyFolder s3://bucket-name -- recursive [--region us-west-2]
+```
+Display subsets of all available ec2 ubuntu-images
+```sh
+aws ec2 describe-images | grep ubuntu
+```
+List users in a table format
+```sh
+aws iam list-users --output table
+```
+List the sizes of an S3 bucket and its contents
+```
+aws s3api list-objects --bucket BUCKETNAME --output json --query "[sum(Contents[].Size), length(Contents[])]"
+```
+Get the total data of your S3 bucket:
+```sh
+aws s3 ls s3://ascribebackup --recursive | grep -v -E "(Bucket: |Prefix: |LastWriteTime|^$|--)" | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
+```
+Get bucketsize and number of files in a list
+```sh
+aws s3api list-objects --bucket ascribebackup --output json --query "[sum(Contents[].Size), length(Contents[])]"
+```
+Move S3 bucket to different location
+```sh
+aws s3 sync s3://oldbucket s3://newbucket --source-region us-west-1 --region us-west-2
+```
+List all of your  instances that are currently stopped, and the reason for the stop
+```sh
+aws ec2 describe-instances --filters Name=instance-state-name,Values=stopped --region eu-west-1 --output json | jq -r .Reservations[].Instances[].StateReason.Message
+```
+Test one of your public CloudFormation templates
+```sh
+aws cloudformation validate-template --region eu-west-1 --template-url https://s3-eu-west-1.amazonaws.com/ca/ca.cftemplate
+```
+
+### Go ahead with boto
+
+Get instance informations
+```python
+from pprint import pprint
+import boto
+import os
+
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+
+conn = boto.ec2.connect_to_region("eu-central-1",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+​
+reservations = conn.get_all_instances()
+instances = [i for r in reservations for i in r.instances]
+for instance in instances:
+    pprint(instance.__dict__)
+    break # remove this to list all instances
+​```
+
+Listing all of your EC2 Instances using boto
+```python
+import boto.ec2
+
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+
+def get_ec2_instances(region):
+    conn = boto.ec2.connect_to_region("eu-central-1",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    reservations = conn.get_all_reservations()
+    for reservation in reservations:
+        print(region+':',reservation.instances)
+
+    for vol in conn.get_all_volumes():
+        print(region+':',vol.id)
+
+def main():
+#    regions = ['us-east-1','us-west-1','us-west-2','eu-west-1','sa-east-1',
+#                'ap-southeast-1','ap-southeast-2','ap-northeast-1']
+    regions = ['eu-central-1']
+    for region in regions:
+        get_ec2_instances(region)
+
+if  __name__ =='__main__':
+    main()
 ```
