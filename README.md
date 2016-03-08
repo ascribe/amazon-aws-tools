@@ -168,27 +168,28 @@ s3cmd --include '2014-05-01*' sync s3://my-bucket-name/ my-local-folder-path/
 
 Get instance informations
 
-```python
-from pprint import pprint
-import boto
-import os
+    ```python
+    from pprint import pprint
+    import boto
+    import os
 
-AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-conn = boto.ec2.connect_to_region("eu-central-1",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-​
-reservations = conn.get_all_instances()
-instances = [i for r in reservations for i in r.instances]
-for instance in instances:
-    pprint(instance.__dict__)
-    break # remove this to list all instances
-​```
+    conn = boto.ec2.connect_to_region("eu-central-1",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    ​
+    reservations = conn.get_all_instances()
+    instances = [i for r in reservations for i in r.instances]
+    for instance in instances:
+        pprint(instance.__dict__)
+        break # remove this to list all instances
+    ​```
 
 Listing all of your EC2 Instances using boto
 
+    ```python
     import boto.ec2
     import os
 
@@ -215,3 +216,4 @@ Listing all of your EC2 Instances using boto
 
     if  __name__ =='__main__':
         main()
+    ```
