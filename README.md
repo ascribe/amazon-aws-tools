@@ -1,6 +1,5 @@
 # Amazon-AWS-tools
 
-### Official documentation can be found [here](http://awsdoc.s3.amazonaws.com/cli/latest/aws-cli.pdf)
 
 ### AWS Cli basic workflow
 
@@ -96,7 +95,76 @@ Test one of your public CloudFormation templates
 aws cloudformation validate-template --region eu-west-1 --template-url https://s3-eu-west-1.amazonaws.com/ca/ca.cftemplate
 ```
 
-### Go ahead with boto
+
+### s3cmd-tool
+
+Install s3cmd
+```sh
+sudo apt-get install s3cmd
+```
+List all buckets
+```sh
+s3cmd ls
+```
+List the contents of the bucket
+```sh
+s3cmd ls s3://my-bucket-name
+```
+Upload a file into the bucket (private)
+```sh
+s3cmd put myfile.txt s3://my-bucket-name/myfile.txt
+```
+Upload a file into the bucket (public)
+```sh
+s3cmd put --acl-public --guess-mime-type myfile.txt s3://my-bucket-name/myfile.txt
+```
+Recursively upload a directory to s3
+```sh
+s3cmd put --recursive my-local-folder-path/ s3://my-bucket-name/mydir/
+```
+Download a file
+```sh
+s3cmd get s3://my-bucket-name/myfile.txt myfile.txt
+```
+Recursively download files that start with myfile
+```sh
+s3cmd --recursive get s3://my-bucket-name/myfile
+```
+Delete a file
+```sh
+s3cmd del s3://my-bucket-name/myfile.txt
+```
+Delete a bucket
+```sh
+s3cmd del --recursive s3://my-bucket-name/
+```
+Create a bucket
+```sh
+s3cmd mb s3://my-bucket-name
+```
+List bucket disk usage (human readable)
+```sh
+s3cmd du -H s3://my-bucket-name/
+```
+Sync local (source) to s3 bucket (destination)
+```sh
+s3cmd sync my-local-folder-path/ s3://my-bucket-name/
+```
+Sync s3 bucket (source) to local (destination)
+```sh
+s3cmd sync s3://my-bucket-name/ my-local-folder-path/
+```
+Do a dry-run (do not perform actual sync, but get information about what would happen)
+```sh
+s3cmd --dry-run sync s3://my-bucket-name/ my-local-folder-path/
+```
+Apply a standard shell wildcard include to sync s3 bucket (source) to local (destination)
+```sh
+s3cmd --include '2014-05-01*' sync s3://my-bucket-name/ my-local-folder-path/
+```
+
+
+### Go ahead with boto (examples)
 
 Get instance informations
 ```python
