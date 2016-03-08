@@ -186,7 +186,7 @@ for instance in instances:
     pprint(instance.__dict__)
     break # remove this to list all instances
 ​```
-
+<br>
 Listing all of your EC2 Instances using boto
 
 ```python
