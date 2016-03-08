@@ -167,53 +167,49 @@ s3cmd --include '2014-05-01*' sync s3://my-bucket-name/ my-local-folder-path/
 ### Go ahead with boto (examples)
 
 Get instance informations
+    from pprint import pprint
+    import boto
+    import os
 
-```
-from pprint import pprint
-import boto
-import os
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    conn = boto.ec2.connect_to_region("eu-central-1",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    ​
+    reservations = conn.get_all_instances()
+    instances = [i for r in reservations for i in r.instances]
+    for instance in instances:
+        pprint(instance.__dict__)
+        break # remove this to list all instances
+              # this break is just for testing to return only one record!!!!
 
-conn = boto.ec2.connect_to_region("eu-central-1",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-​
-reservations = conn.get_all_instances()
-instances = [i for r in reservations for i in r.instances]
-for instance in instances:
-    pprint(instance.__dict__)
-    break # remove this to list all instances
-​```
 
 Listing all of your EC2 Instances using boto
+    import boto.ec2
+    import os
 
-```
-import boto.ec2
-import os
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    def get_ec2_instances(region):
+        conn = boto.ec2.connect_to_region("eu-central-1",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+        reservations = conn.get_all_reservations()
+        for reservation in reservations:
+            print(region+':',reservation.instances)
 
-def get_ec2_instances(region):
-    conn = boto.ec2.connect_to_region("eu-central-1",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    reservations = conn.get_all_reservations()
-    for reservation in reservations:
-        print(region+':',reservation.instances)
+        for vol in conn.get_all_volumes():
+            print(region+':',vol.id)
 
-    for vol in conn.get_all_volumes():
-        print(region+':',vol.id)
+    def main():
+    #    regions = ['us-east-1','us-west-1','us-west-2','eu-west-1','sa-east-1',
+    #                'ap-southeast-1','ap-southeast-2','ap-northeast-1']
+        regions = ['eu-central-1']
+        for region in regions:
+            get_ec2_instances(region)
 
-def main():
-#    regions = ['us-east-1','us-west-1','us-west-2','eu-west-1','sa-east-1',
-#                'ap-southeast-1','ap-southeast-2','ap-northeast-1']
-    regions = ['eu-central-1']
-    for region in regions:
-        get_ec2_instances(region)
-
-if  __name__ =='__main__':
-    main()
-```
+    if  __name__ =='__main__':
+        main()
