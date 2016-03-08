@@ -213,3 +213,62 @@ Listing all of your EC2 Instances using boto
 
     if  __name__ =='__main__':
         main()
+
+
+### Moving S3-buckets between Useraccounts...
+
+Before using the SYNC command, you must give the destination AWS account access to the source AWS accounts resources by using Amazon S3 ACLs or bucket policies.
+First, get the 12-digit account ID for the destination account. Next, in the source account, attach the following policy to the bucket you want to copy:
+
+ - Bucket policy in the source AWS account
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "DelegateS3Access",
+                    "Effect": "Allow",
+                    "Principal": {"AWS": "destinationAccountNumber"},
+                    "Action": "s3:*", "Resource": [
+                        "arn:aws:s3:::sourcebucket/*",
+                        "arn:aws:s3:::sourcebucket"
+                    ]
+                }
+            ]
+        }
+
+Next, attach a policy to a user in the destination AWS account to delegate access to the bucket in the source AWS account:
+
+ - User or group policy in the destination AWS account
+
+        {
+            "Version": "2012-10-17",
+            "Statement": {
+                "Effect": "Allow",
+                "Action": "s3:*",
+                "Resource": [
+                    "arn:aws:s3:::sourcebucket",
+                    "arn:aws:s3:::sourcebucket/*",
+                    "arn:aws:s3:::destinationbucket",
+                    "arn:aws:s3:::destinationbucket/*",
+                ]
+            }
+        }
+
+When these steps are completed, you can copy objects by using the AWS CLI.
+```sh
+aws s3 sync s3://sourcebucket s3://destinationbucket
+```
+
+For more information on transferring ownership of bucket objects to a different account, please refer the following links:<br>
+https://aws.amazon.com/premiumsupport/knowledge-center/account-transfer-s3/<br>
+http://docs.aws.amazon.com/AmazonS3/latest/dev/example-walkthroughs-managing-access-example2.html<br>
+http://docs.aws.amazon.com/cli/latest/reference/s3/sync.html
+
+You can use Cross-Region Replication(CRR), wherein the copying of objects across buckets in different AWS regions is automatic, asynchronous.
+Please refer the following link for more: <br>
+http://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html
+
+You can use a shell script that when run using a cron, a time based job scheduler which will do the sync periodically at fixed times, dates, or intervals.
+Please refer the link to how to create a cron job: <br>
+http://www.thesitewizard.com/general/set-cron-job.shtml
