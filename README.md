@@ -168,7 +168,7 @@ s3cmd --include '2014-05-01*' sync s3://my-bucket-name/ my-local-folder-path/
 
 Get instance informations
 
-```python
+```
 from pprint import pprint
 import boto
 import os
@@ -189,7 +189,7 @@ for instance in instances:
 
 Listing all of your EC2 Instances using boto
 
-```python
+```
 import boto.ec2
 import os
 
