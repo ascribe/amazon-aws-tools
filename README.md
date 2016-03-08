@@ -167,6 +167,7 @@ s3cmd --include '2014-05-01*' sync s3://my-bucket-name/ my-local-folder-path/
 ### Go ahead with boto (examples)
 
 Get instance informations
+
 ```python
 from pprint import pprint
 import boto
@@ -186,10 +187,11 @@ for instance in instances:
     break # remove this to list all instances
 ​```
 
-
 Listing all of your EC2 Instances using boto
+
 ```python
 import boto.ec2
+import os
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
