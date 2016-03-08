@@ -3,7 +3,7 @@
 
 ### AWS Cli basic workflow
 
-If you want to quickly list instances and their Security groups for particular environment, here is one-liner:
+If you want to quickly list instances and their Security groups for particular environment, here is the one-liner:
 ```sh
     aws ec2 describe-instances --filter Name=tag:Environment,Values=ENVIRONMENT_NAME --query 'Reservations[*].Instances[*].{ID:InstanceId,SG:SecurityGroups,Tags:Tags}' --output text --profile profile_name
 ```
