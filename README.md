@@ -279,18 +279,18 @@ http://www.thesitewizard.com/general/set-cron-job.shtml
 
 ### Best practices
 
-- Tag EBS Volumes
-        Indicate name of the instance and purpose (boot, database, etc) so you know what that available state volume was used for!
+######Tag EBS Volumes
+Indicate name of the instance and purpose (boot, database, etc) so you know what that available state volume was used for!
 
-- Power Down for the Weekend
-        Turn off your development environment during the weekends, holidays or when is not in use to save some bucks.
+######Power Down for the Weekend
+Turn off your development environment during the weekends, holidays or when is not in use to save some bucks.
 
-- Throw out unattached IP Addresses
-        Remember that an Elastic IP address when not in use will be charged for every hour it is not attached to an instance.
+######Throw out unattached IP Addresses
+Remember that an Elastic IP address when not in use will be charged for every hour it is not attached to an instance.
 
-- Replace Outdated S3 Objects with Glacier 
-        You don't have to delete out of date S3 objects.
-        AWS S3 has an automated process that allows you to transfer objects over to Glacier.
+######Replace Outdated S3 Objects with Glacier 
+You don't have to delete out of date S3 objects.
+AWS S3 has an automated process that allows you to transfer objects over to Glacier.
 
 
 
