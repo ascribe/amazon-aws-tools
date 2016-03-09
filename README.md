@@ -94,7 +94,10 @@ Test one of your public CloudFormation templates
 ```sh
 aws cloudformation validate-template --region eu-west-1 --template-url https://s3-eu-west-1.amazonaws.com/ca/ca.cftemplate
 ```
-
+Request spot-instance
+```sh
+aws ec2 request-spot-instances  --spot-price "0.5995" --instance-count 1 --type "one-time" --launch-specification {\"ImageId\":\"ami-062c161b\",\"InstanceType\":\"c4.4xlarge\",\"Placement\":{\"AvailabilityZone\":\"eu-central-1\"},\"SecurityGroupIds\":\"sg-de11b4b7\"}
+```
 
 ### s3cmd-tool
 
@@ -272,3 +275,22 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html
 You can use a shell script that when run using a cron, a time based job scheduler which will do the sync periodically at fixed times, dates, or intervals.
 Please refer the link to how to create a cron job: <br>
 http://www.thesitewizard.com/general/set-cron-job.shtml
+
+
+### Best practices
+
+- Tag EBS Volumes
+        Indicate name of the instance and purpose (boot, database, etc) so you know what that available state volume was used for!
+
+- Power Down for the Weekend
+        Turn off your development environment during the weekends, holidays or when is not in use to save some bucks.
+
+- Throw out unattached IP Addresses
+        Remember that an Elastic IP address when not in use will be charged for every hour it is not attached to an instance.
+
+- Replace Outdated S3 Objects with Glacier 
+        You don't have to delete out of date S3 objects.
+        AWS S3 has an automated process that allows you to transfer objects over to Glacier.
+
+
+
