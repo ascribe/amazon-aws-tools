@@ -218,6 +218,41 @@ Listing all of your EC2 Instances using boto
         main()
 
 
+Retrieving basic information from the running EC2 instances
+
+        from collections import defaultdict
+        import boto
+        
+        # Connect to EC2
+        ec2 = boto3.resource('ec2')
+        # Get information for all running instances
+        running_instances = ec2.instances.filter(Filters=[{
+            'Name': 'instance-state-name',
+            'Values': ['running']}])        
+        ec2info = defaultdict()
+        for instance in running_instances:
+            for tag in instance.tags:
+                if 'Name'in tag['Key']:
+                    name = tag['Value']
+         
+            ec2info[instance.id] = {
+                'Tag': name,
+                'Type': instance.instance_type,
+                'State': instance.state['Name'],
+                'Private IP': instance.private_ip_address,
+                'Public IP': instance.public_ip_address,
+                'DNS Name': instance.public_dns_name,
+                'Launch Time': instance.launch_time
+                }
+        
+        attributes = ['Tag', 'Type', 'State', 'Private IP', 'Public IP', 'DNS Name', 'Launch Time']
+        for instance_id, instance in ec2info.items():
+            for key in attributes:
+                print("{0}: {1}".format(key, instance[key]))
+            print("------")
+
+
+
 ### Moving S3-buckets between Useraccounts...
 
 Before using the SYNC command, you must give the destination AWS account access to the source AWS accounts resources by using Amazon S3 ACLs or bucket policies.
